@@ -34,7 +34,8 @@ class BookingInfoViewSet(generics.ListAPIView):
                 END as 'price' \
                 FROM listings_listing as listing \
                 GROUP BY listing.id \
-                HAVING MIN (price)< %s" %(check_in, check_out, check_in, check_out, max_price)
+                HAVING MIN (price)< %s \
+                ORDER BY price ASC" %(check_in, check_out, check_in, check_out, max_price)
         else:
             query = "SELECT \
                 listing.id, listing.title, listing.listing_type, \
@@ -46,8 +47,8 @@ class BookingInfoViewSet(generics.ListAPIView):
                 ELSE NULL \
                 END as 'price' \
                 FROM listings_listing as listing \
-                GROUP BY listing.id \
-                HAVING MIN (price)< %s" %max_price
+                WHERE price <= %s \
+                ORDER BY price ASC" %max_price
 
         queryset = Listing.objects.raw(query)
 
